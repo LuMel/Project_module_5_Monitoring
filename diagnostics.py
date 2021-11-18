@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import timeit
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from io import BytesIO
 import os
 import json
@@ -21,7 +21,7 @@ deployment_path = os.path.join(config['prod_deployment_path'])
 
 
 ##################Function to get model predictions
-def model_predictions() -> np.ndarray:
+def model_predictions(data: Optional[pd.DataFrame] = None) -> np.ndarray:
     # read the deployed model and a test dataset, calculate predictions
     with open(deployment_path + "/" + "trainedmodel.pkl", 'rb') as model_pickle:
         model_ = pickle.load(model_pickle)
@@ -29,8 +29,9 @@ def model_predictions() -> np.ndarray:
     with open(deployment_path + "/" + "scscaler.pkl", 'rb') as pickle_sc:
         sc_ = pickle.load(pickle_sc)
     
-    test_data = pd.read_csv(test_data_path + "/" + "testdata.csv")
-    X_test = test_data[["lastmonth_activity", "lastyear_activity", "number_of_employees"]]
+    if data is None:
+        data = pd.read_csv(test_data_path + "/" + "testdata.csv")
+    X_test = data[["lastmonth_activity", "lastyear_activity", "number_of_employees"]]
 
     return model_.predict(sc_.transform(X_test))
 

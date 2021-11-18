@@ -5,6 +5,8 @@ import pickle
 import create_prediction_model
 import diagnosis 
 import predict_exited_from_saved_model
+from scoring import score_model
+import diagnostics
 import json
 import os
 
@@ -24,27 +26,28 @@ prediction_model = None
 
 #######################Prediction Endpoint
 @app.route("/prediction", methods=['POST','OPTIONS'])
-def predict():        
+def predict():    
+    # TODO: Fill    
     #call the prediction function you created in Step 3
-    return #add return value for prediction outputs
+    return None #add return value for prediction outputs
 
 #######################Scoring Endpoint
 @app.route("/scoring", methods=['GET','OPTIONS'])
 def stats():        
     #check the score of the deployed model
-    return #add return value (a single F1 score number)
+    return score_model(False)
 
 #######################Summary Statistics Endpoint
 @app.route("/summarystats", methods=['GET','OPTIONS'])
 def stats():        
     #check means, medians, and modes for each column
-    return #return a list of all calculated summary statistics
+    return diagnostics.dataframe_summary()
 
 #######################Diagnostics Endpoint
 @app.route("/diagnostics", methods=['GET','OPTIONS'])
 def stats():        
     #check timing and percent NA values
-    return #add return value for all diagnostics
+    return diagnostics.missing_data(), diagnostics.execution_time(), diagnostics.outdated_packages_list()
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)

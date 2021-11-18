@@ -1,5 +1,6 @@
 from flask import Flask, session, jsonify, request
 import pandas as pd
+from typing import Optional
 import numpy as np
 import pickle
 import os
@@ -20,7 +21,7 @@ model_path = os.path.join(config['output_model_path'])
 
 
 #################Function for model scoring
-def score_model():
+def score_model(save: Optional[bool] = True) -> float:
     #this function should take a trained model, load test data, and calculate an F1 score for the model relative to the test data
     #it should write the result to the latestscore.txt file
 
@@ -38,8 +39,12 @@ def score_model():
 
     preds = model_.predict(Xtest_sc)
 
-    with open(model_path + "/" + "latestscore.txt", 'w') as outfile:
-        outfile.write(str(metrics.f1_score(y_test, preds)))
+    f1_score_ = metrics.f1_score(y_test, preds)
+    if save:
+        with open(model_path + "/" + "latestscore.txt", 'w') as outfile:
+            outfile.write(str(f1_score_))
+    
+    return f1_score_
     
 if __name__ == "__main__":
     score_model()
