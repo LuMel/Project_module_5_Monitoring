@@ -1,0 +1,1 @@
+*/10 * * * * /Users/luis.melgar/Documents/personal_projects/Project_module_5_Monitoring/fullprocess.py
