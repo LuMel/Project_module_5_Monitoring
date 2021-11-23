@@ -43,10 +43,10 @@ def dataframe_summary() -> List[Tuple[float, float, float]]:
     # https://stackoverflow.com/questions/25039626/how-do-i-find-numeric-columns-in-pandas
     data_numeric = data.select_dtypes(include=np.number)
     list_stats = list()
-
+    
     for col in data_numeric:
-        list_stats.append((data_numeric[col].mean, data_numeric[col].median, data_numeric[col].std))
-
+        list_stats.append((data_numeric[col].mean(), data_numeric[col].median(), data_numeric[col].std()))
+    
     return list_stats
 
 ##################Function to check for missing data

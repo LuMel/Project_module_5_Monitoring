@@ -1,3 +1,4 @@
+import subprocess
 from flask import Flask, session, jsonify, request
 import pandas as pd
 import numpy as np
@@ -39,16 +40,18 @@ def scoring():
     return str(score_model(False))
 
 #######################Summary Statistics Endpoint
-@app.route("/summarystats")#, methods=['GET','OPTIONS'])
+@app.route("/summarystats", methods=['GET','OPTIONS'])
 def stats():        
     #check means, medians, and modes for each column
-    return dataframe_summary()
+    return str(dataframe_summary())
 
 #######################Diagnostics Endpoint
 @app.route("/diagnostics", methods=['GET','OPTIONS'])
 def diagnostics():        
     #check timing and percent NA values
-    return missing_data(), execution_time(), outdated_packages_list()
+    return {'missing_data': str(missing_data()), 
+            'exec_time': str(execution_time()), 
+            'outdated_packages': str(outdated_packages_list())}
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
