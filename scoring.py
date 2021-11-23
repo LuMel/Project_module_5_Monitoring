@@ -21,18 +21,21 @@ model_path = os.path.join(config['output_model_path'])
 
 
 #################Function for model scoring
-def score_model(save: Optional[bool] = True) -> float:
+def score_model(save: Optional[bool] = True, 
+                test_data: Optional[pd.DataFrame] = None, 
+                path: str = model_path) -> float:
     #this function should take a trained model, load test data, and calculate an F1 score for the model relative to the test data
     #it should write the result to the latestscore.txt file
 
     #load fitted model
-    with open(model_path + "/" + "trainedmodel.pkl", "rb") as model_file:
+    with open(path + "/" + "trainedmodel.pkl", "rb") as model_file:
         model_ = pickle.load(model_file)
     # load StandardScaler
-    with open(model_path + "/" + "scscaler.pkl", "rb") as sc_file:
+    with open(path + "/" + "scscaler.pkl", "rb") as sc_file:
         sc_ = pickle.load(sc_file)
 
-    test_data = pd.read_csv(test_data_path + "/" + "testdata.csv")
+    if test_data is None:
+        test_data = pd.read_csv(test_data_path + "/" + "testdata.csv")
     X_test = test_data[["lastmonth_activity", "lastyear_activity", "number_of_employees"]]
     y_test = test_data["exited"].values
     Xtest_sc = sc_.transform(X_test)
@@ -41,7 +44,7 @@ def score_model(save: Optional[bool] = True) -> float:
 
     f1_score_ = metrics.f1_score(y_test, preds)
     if save:
-        with open(model_path + "/" + "latestscore.txt", 'w') as outfile:
+        with open(path + "/" + "latestscore.txt", 'w') as outfile:
             outfile.write(str(f1_score_))
     
     return f1_score_

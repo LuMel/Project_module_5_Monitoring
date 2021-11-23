@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+from typing import List
 
 #Specify a URL that resolves to your workspace
 URL = "http://127.0.0.1"
@@ -20,8 +21,12 @@ response4 = requests.get(URL + PORT + '/diagnostics').content
 #combine all API responses
 responses = [response1, response2, response3, response4]
 
-#write the responses to your workspace
-with open(model_path + '/apireturns.txt', 'wb') as f:
-    for line in responses:
-        f.write(line)
-        f.write(b'\n')
+def write_returns(list_responses: List[str] = responses):
+    #write the responses to your workspace
+    with open(model_path + '/apireturns.txt', 'wb') as f:
+        for line in list_responses:
+            f.write(line)
+            f.write(b'\n')
+
+if __name__ == '__main__':
+    write_returns(responses)
